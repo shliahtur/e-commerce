@@ -1,0 +1,21 @@
+﻿@model StoreViewModel
+@using Store.Controllers
+@using Store.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+
+    var categories = ProductController.checkCatList;
+    var details = ProductController.checkDetailList;
+}
+
+<div id="blogContainer">
+    <div id="mainblogview">
+        @{Html.RenderPartial("Products", Model);}
+    </div>
+</div>
+
+
+

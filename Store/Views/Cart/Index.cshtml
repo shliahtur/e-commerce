@@ -1,0 +1,54 @@
+﻿@model Store.Models.CartIndexViewModel
+
+@{
+    ViewBag.Title = "Корзина";
+}
+
+<style>
+    #cartTable td { vertical-align: middle; }
+</style>
+<h2>Корзина</h2>
+<table id="cartTable" class="table">
+    <thead>
+        <tr>
+            <th>Quantity</th>
+            <th>Item</th>
+            <th class="text-right">Price</th>
+            <th class="text-right">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var line in Model.Cart.Lines)
+        {
+            <tr>
+                <td class="text-center">@line.Quantity</td>
+                <td class="text-left">@line.Product.Name</td>
+                <td class="text-right">@line.Product.Price грн</td>
+                <td class="text-right">
+                    @((line.Quantity * line.Product.Price)) грн
+                </td>
+                <td>
+                    @using (Html.BeginForm("RemoveFromCart", "Cart")) 
+                    {
+                        @Html.Hidden("ProductId", line.Product.Id)
+                        @Html.HiddenFor(x => x.ReturnUrl)
+                        <input class="btn btn-sm btn-warning" type="submit" value="Удалить" />
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right">Total:</td>
+            <td class="text-right">
+                @Model.Cart.ComputeTotalValue() грн
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="text-center">
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Countinue shopping</a>
+    @Html.ActionLink("Checkout now", "Checkout", null, new { @class = "btn btn-primary"})
+</div>

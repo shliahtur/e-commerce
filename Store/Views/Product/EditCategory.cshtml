@@ -1,0 +1,73 @@
+﻿@model Store.Models.CategoryViewModel
+@{
+    ViewBag.Title = "Редактирование category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("EditCategory", "Product", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="editPostContainer">
+        <table>
+            <tr>
+                <td>Id :</td>
+                <td colspan="2" class="editPostId">@Html.TextBoxFor(m => m.Id, new { @class = "editPostIdInp", @readonly = "readonly" })</td>
+            </tr>
+            <tr>
+                <td>Имя :</td>
+                <td colspan="2" class="editPostTitle">@Html.TextBoxFor(m => m.Name, new { @class = "editPostTitleInp" })</td>
+            </tr>
+
+            }
+            <tr>
+                @if (Model.CategoryProperties.Count() > 0)
+                {
+                <tr>
+                    @if (Model.CategoryProperties.Count() == 1)
+                    {
+                        <td>Характеристика:</td>
+                    }
+                    else
+                    {
+                        <td>Характеристики :</td>
+                    }
+                    <td style="width:30px;"><a href="@Url.Action("AddPropertyToCategory", "Product", new { categoryid = Model.Id })" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                    <td class="editPostCategories">
+
+                        @foreach (var prop in Model.CategoryProperties)
+                        {
+                            <div class="editPostCatInp">
+                                <div class="catName">@prop.PropertyName</div>
+                                <a href="@Url.Action("RemovePropertyFromCategory", "Product", new { categoryid = Model.Id, slug=Model.UrlSeo, propName=prop.PropertyName })" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/remove.png")" width="25" height="25" alt="add" /></a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>Характеристика:</td>
+                    <td colspan="2"><a href="@Url.Action("AddPropertyToCategory", "Product", new { categoryid = Model.Id})" class="addremoveBtn" title="Add Category"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                </tr>
+            }
+
+
+
+
+
+                <tr>
+                    <td>UrlSeo :</td>
+                    <td colspan="2">@Html.TextBoxFor(m => m.UrlSeo, new { @class = "editPostSeo" })</td>
+                </tr>
+
+
+                <tr>
+                    <td></td>
+                    <td colspan="3" class="editPostBody"><input class="comTextBtn" type="submit" value="&#x27a5;" /></td>
+                </tr>
+
+            </table>
+            </div>
+        }
+
+

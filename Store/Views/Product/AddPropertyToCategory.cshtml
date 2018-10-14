@@ -1,0 +1,48 @@
+﻿@model Store.Models.CategoryViewModel
+@using Store.Models
+@{
+    ViewBag.Title = "AddPropertyToCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+   
+}
+@using (Html.BeginForm("AddPropertyToCategory", "Product", FormMethod.Post, new { @class = "addCatForm", role = "form" }))
+{
+   
+    @Html.AntiForgeryToken()
+    <table class="addCatCont">     
+        <tr>
+            <td><a href="@Url.Action("AddNewProperty", "Product", new { categoryid = Model.Id, callfrompcategory = true})" class="addremoveBtn" title="Add Property"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+            <td><= Add New Property</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                @for (int i = 0; i < Model.ProductProperties.Count(); i++)
+                {
+                    EFDbContext db = new EFDbContext();
+                    string propId = Model.ProductProperties[i].Id;
+                    bool check = db.CategoryProperties.Where(x => x.PropertyId == propId && x.CategoryId == Model.Id).Select(x => x.Checked).FirstOrDefault();
+                    if (check)
+                    {
+                        Model.ProductProperties[i].Checked = true;
+                        @Html.CheckBoxFor(m => m.ProductProperties[i].Checked)
+                    }
+                    else
+                    {
+                        @Html.CheckBoxFor(m => m.ProductProperties[i].Checked)
+                    }
+
+                    @Html.LabelFor(m => m.ProductProperties[i].Checked, Model.ProductProperties[i].PropertyName)
+                    @Html.HiddenFor(m => m.ProductProperties[i].Id)<br />
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                @Html.TextBoxFor(m => m.Id, new { type = "hidden" })
+                <input class="addCatBtn" type="submit" value="&#x27a5;" />
+            </td>
+        </tr>
+    </table>
+}
+

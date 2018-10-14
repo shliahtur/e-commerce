@@ -1,0 +1,63 @@
+﻿@model ProductViewModel
+@using Store.Controllers
+@using Microsoft.AspNet.Identity
+@using Store.Models
+@{
+    ViewBag.Name = Model.Name;
+    ViewBag.Description = Model.Description;
+    ViewBag.Price = Model.Price;
+    ViewBag.CommentViewModel = Model.CommentViewModel;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+
+@{
+    ProductController productCtrl = new ProductController();
+}
+<div class="postBody">
+    @{
+        int fakeid = Int32.Parse(Model.ID) + 16946;
+        <div>Код товара: @fakeid</div>
+    }
+    @foreach (var picture in Model.Pictures)
+    {
+
+        @Html.Raw("<img style='width:300px; height:300px;' src=\"data:image/jpeg;base64,"
+                                                               + Convert.ToBase64String(picture.Image) + "\" />")
+
+    }
+
+    <h2>@Model.Name</h2>
+
+    <h2>@Model.Description</h2>
+
+    <h2>@Model.Price грн</h2>
+
+    @foreach (var pair in Model.DetailPairs)
+    {
+        <table>
+            <tr>@pair.Key</tr>
+            <tr>  -  </tr>
+            <tr>@pair.Value</tr>
+        </table>
+    }
+
+
+    <div class="postVote" id="postVote">
+        <table>
+            <tr><td style="text-align:center; color:green; font-style:italic;">@Model.ProductLikes</td></tr>
+            <tr><td><a href="@Url.Action("UpdateProductLike", "Product", new { slug=Model.UrlSeo, productid = Model.ID, username = User.Identity.GetUserName(), likeordislike = "like",sortorder = ViewBag.CurrentSort })"><img src="@Url.Content("~/Content/images/post/upvote.png")" width="30" height="30" alt="upvote" /></a></td></tr>
+            <tr><td><a href="@Url.Action("UpdateProductLike", "Product", new { slug=Model.UrlSeo, productid = Model.ID, username = User.Identity.GetUserName(), likeordislike = "dislike" ,sortorder = ViewBag.CurrentSort})"><img src="@Url.Content("~/Content/images/post/downvote.png")" width="30" height="30" alt="downvote" /></a></td></tr>
+            <tr><td style="text-align:center; color:#b50000; font-style:oblique;">@Model.ProductDislikes</td></tr>
+        </table>
+    </div>
+
+    <h2><a href="@Url.Action("AddToCart","Cart",new {ProductId = Model.ID })" title="Name">купить</a> </h2>
+
+</div>
+
+@{Html.RenderPartial("Comments", Model.CommentViewModel);}
+
+

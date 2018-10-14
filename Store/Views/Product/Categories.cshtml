@@ -1,0 +1,40 @@
+﻿@model Store.Models.CategoryViewModel
+@using Store.Models
+@using Store.Controllers
+
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var categories = ProductController.checkCatList;
+
+}
+@using (Html.BeginForm("RemoveCategories", "Product", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <table class="catsAndTags">
+        <tr>
+            <th>Категории</th>
+        </tr>
+        <tr>
+            <td><a href="@Url.Action("AddNewCategory", "Product", new { callfromproduct = false })" class="addremoveBtn" title="Добавить категорию"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" style="float:left;" /><div style="float:left;margin-left:5px;">New Category</div></a></td>
+
+        </tr>
+        <tr>
+            <td>
+                @foreach (var cat in categories)
+                {
+                    <div>
+                        
+                        <input type="checkbox" name="categoryNames" value="@cat.Category.Name" /> <a href="@Url.Action("EditCategory","Product",new {slug = cat.Category.UrlSeo })" title="Name">@cat.Category.Name</a>
+                    </div>
+               
+            }
+
+
+
+
+
+            </tr>
+
+        </table>
+    }

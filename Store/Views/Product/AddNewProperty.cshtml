@@ -1,0 +1,29 @@
+﻿@model Store.Models.CategoryViewModel
+@{
+    ViewBag.Title = "AddNewCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("AddNewProperty", "Product", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <table class="newCatCont">
+        <tr>
+            <td>Name :</td>
+            <td><input class="newCatInp" type="text" name="propName" /></td>
+        </tr>
+        <tr>
+            <td>UrlSeo :</td>
+            <td><input class="newCatInp" type="text" name="propUrlSeo" /></td>
+        </tr>    
+        <tr>
+            <td colspan="2">
+                @if (Model != null)
+                {
+                    <input type="text" value="@Model.Id" name="catid" />
+                }
+                <input class="newCatBtn" type="submit" value="&#x27a5;" />
+            </td>
+        </tr>
+    </table>
+}
+

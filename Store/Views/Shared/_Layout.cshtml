@@ -1,0 +1,189 @@
+﻿@using System.Web.Optimization
+@using Store.Controllers;
+@using MvcSiteMapProvider.Web.Html;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Name</title>
+    <meta charset="utf-8" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/ErrorStyles.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="~/ckeditor/ckeditor.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("Style", required: false)
+    @RenderSection("scripts", required: false)
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse" style="background-color:aliceblue" role="navigation">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>@Html.ActionLink("Админка", "AllProducts", "Product")</li>
+                }
+                <li>@Html.ActionLink("Магаз", "Index", "Product")</li>
+                <li>@Html.MvcSiteMap().Menu()</li>
+                <li>
+                    @using (Ajax.BeginForm("Products", "Product", new AjaxOptions
+                    {
+                        HttpMethod = "Get",
+                        UpdateTargetId = "mainblogview"
+                    }))
+                    {
+                        if (ViewBag.CurrentSearchCategory != null)
+                        {
+                            foreach (var item in ViewBag.CurrentSearchCategory)
+                            {
+                                <input type="hidden" name="searchCategory" value="@item" />
+                            }
+                        }
+                        <input type="hidden" name="sortOrder" value="@ViewBag.CurrentSort" />
+                        <input type="search" id="search" name="searchString" value="@ViewBag.CurrentSearchString" placeholder="Поиск..." />
+                        <input type="submit" value="&#128270;" style="background:none;border:none;" />
+                    }
+                </li>
+            </ul>
+           
+           
+            @Html.Partial("_LoginPartial")
+            @{Html.RenderAction("Summary", "Cart");}
+
+        </div>
+
+    </div>
+    <div style="text-align: center;">
+        @{
+            var categories = ProductController.checkCatList;
+            var details = ProductController.checkDetailList;
+
+        }
+        
+
+
+            @using (Ajax.BeginForm("Index", "Product", new AjaxOptions
+            {
+                HttpMethod = "Get",
+                UpdateTargetId = "mainblogview"
+            }))
+            {
+
+                <table>
+                    <tr>
+                        <td>
+                            <div style="font-size:20px; font-style:oblique;">
+                                @foreach (var cat in categories)
+                                {
+
+                                    <a href="@Url.Action("Index", "Product", new { searchCategory = cat.Category.Name })">@cat.Category.Name</a>
+
+                                }
+
+
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            }
+        
+
+            <div class="row panel">
+                <div id="categories" class="col-xs-3 hidden-xs">
+
+
+                    @{
+                        var products = ProductController.productList;
+
+                        List<int> prices = new List<int>();
+                        foreach (var product in products)
+                        {
+                            prices.Add(product.Price);
+                        }
+                        prices.Sort();
+                        int[] priceArray = prices.ToArray();
+
+                    }
+
+                    <script>
+                    $(function () {
+
+                        var valMap = @Html.Raw(Json.Encode(priceArray));
+                        $("#slider-range").slider({
+                            range: true,
+                            min: 0,
+                            max: valMap.length - 1,
+                            values: [0, valMap.length -1],
+                            slide: function (event, ui) {
+                                $("#minPrice").val(valMap[ui.values[0]]);
+                                $("#maxPrice").val(valMap[ui.values[1]])
+                            }
+                        });
+                        $("#minPrice").val(valMap[$("#slider-range").slider("values", 0)]);
+                        $("#maxPrice").val(valMap[$("#slider-range").slider("values", 1)]);
+
+                    });
+                    </script>
+
+
+                    @using (Ajax.BeginForm("Products", "Product", new AjaxOptions
+                    {
+                        HttpMethod = "Get",
+                        UpdateTargetId = "mainblogview"
+                    }))
+                    {
+                        if (ViewBag.CurrentSearchCategory != null)
+                        {
+                            foreach (var item in ViewBag.CurrentSearchCategory)
+                            {
+                                <input type="hidden" name="searchCategory" value="@item" />
+                            }
+                        }
+                        <input type="hidden" name="sortOrder" value="@ViewBag.CurrentSort" />
+                        <input type="hidden" name="searchString" value="@ViewBag.CurrentSearchString" />
+                        <input type="text" id="minPrice" name="minPrice" value="@ViewBag.MinPrice" />
+                        <input type="text" id="maxPrice" name="maxPrice" value="@ViewBag.MaxPrice" />
+                        <div id="slider-range"></div>
+                        <input type="submit" id="submit" value="OK" />
+                    }
+
+
+                    @using (Ajax.BeginForm("Products", "Product", new AjaxOptions
+                    {
+                        HttpMethod = "Get",
+                        UpdateTargetId = "mainblogview"
+                    }))
+                    {
+
+                        foreach (var v in details)
+                        {
+                            foreach (var kvp in v.Detail)
+                            {
+                                <h3> @kvp.Key:</h3>
+                                <br />
+                                foreach (string value in kvp.Value)
+                                {
+                                    <a href="@Url.Action("Index", "Product", new { detailPair = string.Format("{0}={1}", @kvp.Key, @value) })">@value</a>
+                                   
+                                    <br />
+                                }
+                            }
+                        }
+                    }
+
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    @RenderBody()
+                </div>
+            </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿@model Store.Models.ShippingDetails
+@{
+    /**/
+
+    ViewBag.Title = "Store: Checkout";
+}
+<h2>Check out now</h2>
+<p>Please enter your details, and we'll ship your goods right away!</p>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <div class="form-group">
+        <label>ФИО: </label>
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+    </div>
+    <label>Контактный телефон: </label>
+    @Html.TextBoxFor(x => x.Phone, new { @class = "form-control" })
+    <label>Электронная почта: </label>
+    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+    <label>Населённый пункт: </label>
+    @Html.TextBoxFor(x => x.City, new { @class = "form-control" })
+    <label>Примечания: </label>
+    @Html.TextAreaFor(x => x.Notes, new { @class = "form-control" })
+
+    <h3>Options</h3>
+    <div class="checkbox">
+        <label>
+            @Html.EditorFor(x => x.GiftWrap)
+            Gift wrap these items
+        </label>
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Заказать" />
+    </div>
+}
+

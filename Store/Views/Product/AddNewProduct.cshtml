@@ -1,0 +1,44 @@
+﻿@model Store.Models.ProductViewModel
+@using Store.Models
+@{
+    ViewBag.Title = "Add New Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("AddNewProduct", "Product", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="editPostContainer">
+        <table>
+            <tr>
+                <td>ProductId :</td>
+                <td colspan="2" class="editProductId">@Html.TextBoxFor(m => m.ID, new { @class = "editPostIdInp", @readonly = "readonly" })</td>
+            </tr>
+            <tr>
+                <td>Name :</td>
+                <td colspan="2" class="editProductName">@Html.TextBoxFor(m => m.Name, new { @class = "editPostTitleInp" })</td>
+            </tr>
+            <tr>
+                <td>Price :</td>
+                <td colspan="2">@Html.TextBoxFor(m => m.Price, new { @class = "editPostMeta" })</td>
+            </tr>
+            <tr>
+                <td>UrlSeo :</td>
+                <td colspan="2">@Html.TextBoxFor(m => m.UrlSeo, new { @class = "editPostSeo" })</td>
+            </tr>
+            <tr>
+                <td>Description :</td>
+                <td colspan="2" class="editPostDesc">
+                    @Html.TextAreaFor(m => m.Description, new { @id = "editor1", Value = Model.Description })
+                </td>
+            </tr>
+                
+            <tr>
+                <td colspan="3" class="editPostBody"><input class="comTextBtn" type="submit" value="&#x27a5;" /></td>
+            </tr>
+        </table>
+       
+
+    </div>
+}
+

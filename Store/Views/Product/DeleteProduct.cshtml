@@ -1,0 +1,18 @@
+﻿@model Store.Models.ProductViewModel
+@{
+    ViewBag.Title = "Delete Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("DeleteProduct", "Product", FormMethod.Post, new { @role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="delacccont">
+        <div class="delaccgrp">
+            <div class="delacclbl" style="text-align:center;">Are you sure?</div>
+        </div>
+        <div class="delaccgrp">
+            <input type="hidden" value="@Model.ID" name="postId" />
+            <input type="submit" value="Удалить" class="btn btn-default delaccbtn" />
+        </div>
+    </div>
+}

@@ -1,0 +1,19 @@
+﻿@model Store.Models.ProductViewModel
+@{
+
+ ViewBag.Title = "Add Photo";
+Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("AddPictureToProduct", "Product", FormMethod.Post, new { enctype = "multipart/form-data"}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="slug" value="@Model.UrlSeo" />
+    <input type="hidden" name="productid" value="@Model.ID" />
+    <div class="editor-label">Файл изображения</div>
+    <div class="editor-field">
+        <input type="file" name="uploadImage" />
+    </div>
+    <input class="addVidBtn" type="submit" value="&#x27a5;" />
+}
+@Model.ID

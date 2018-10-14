@@ -1,0 +1,186 @@
+﻿@model Store.Models.ProductViewModel
+@using Store.Models
+@{
+    ViewBag.Title = "Редактирование товара";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("EditProduct", "Product", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="editPostContainer">
+        <table>
+            <tr>
+                <td>Id :</td>
+                <td colspan="2" class="editPostId">@Html.TextBoxFor(m => m.ID, new { @class = "editPostIdInp", @readonly = "readonly" })</td>
+            </tr>
+            <tr>
+                <td>Имя :</td>
+                <td colspan="2" class="editPostTitle">@Html.TextBoxFor(m => m.Name, new { @class = "editPostTitleInp" })</td>
+            </tr>
+            <tr>
+                <td>Цена :</td>
+                <td colspan="2" class="editPostTitle">@Html.TextBoxFor(m => m.Price, new { @class = "editPostTitleInp" })</td>
+            </tr>
+            <tr>
+                @if (Model.Pictures.Count() > 0)
+                {
+                <tr>
+                    @if (Model.Pictures.Count() == 1)
+                    {
+                        <td>Изображение :</td>
+                    }
+                    else
+                    {
+                        <td>Изображения :</td>
+                    }
+                    <td style="width:30px;"><a href="@Url.Action("AddPictureToProduct", "Product", new { productid = Model.ID, slug=Model.UrlSeo})" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                    <td class="editPostVideo">
+                        @foreach (var picture in Model.Pictures)
+                        {
+                            <div class="editPostVidCont">
+
+                                <a href="@Url.Action("RemovePictureFromProduct", "Product", new { productid = Model.ID, slug=Model.UrlSeo })" class="addremoveBtn" title="Удалить картинку"><img src="@Url.Content("~/Content/images/post/remove.png")" width="25" height="25" alt="remove" /></a>
+                            </div>
+                            @Html.Raw("<img style='width:80px; height:80px;' src=\"data:image/jpeg;base64,"
+                                  + Convert.ToBase64String(picture.Image) + "\" />")
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>Изображение :</td>
+                    <td colspan="2"><a href="@Url.Action("AddPictureToProduct", "Product", new { productid = Model.ID, slug=Model.UrlSeo})" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                </tr>
+            }
+                <tr>
+                    @if (Model.ProductCategories.Count() > 0)
+                    {
+                    <tr>
+                        @if (Model.ProductCategories.Count() == 1)
+                        {
+                            <td>Категория:</td>
+                        }
+                        else
+                        {
+                            <td>Категории :</td>
+                        }
+                        <td style="width:30px;"><a href="@Url.Action("AddCategoryToProduct", "Product", new { productid = Model.ID })" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                        <td class="editPostCategories">
+                            @foreach (var cat in Model.ProductCategories)
+                            {
+                                <div class="editPostCatInp">
+                                    <div class="catName">@cat.Name</div>
+                                    <a href="@Url.Action("RemoveCategoryFromProduct", "Product", new { productid = Model.ID, slug=Model.UrlSeo, catName=cat.Name })" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/remove.png")" width="25" height="25" alt="add" /></a>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>Категория :</td>
+                        <td colspan="2"><a href="@Url.Action("AddCategoryToProduct", "Product", new { productid = Model.ID})" class="addremoveBtn" title="Add Category"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                    </tr>
+                }
+                    @{
+                        List<string> catsId = new List<string>();
+                        foreach (var c in Model.ProductCategories)
+                        {
+                            catsId.Add(c.Id);
+                        }
+                        string catId;
+                        if (catsId.Count.Equals(0))
+                        {
+                            catId = "1";
+                        }
+                        else
+                        { catId = catsId.First(); }
+
+                    }
+
+                    <tr>
+                        <td>Характеристики:</td>
+                        <td colspan="2"><a href="@Url.Action("AddPropertyValueToProduct", "Product", new { categoryid = catId, productid = Model.ID, slug=Model.UrlSeo})" class="addremoveBtn" title="Add Property"><img src="@Url.Content("~/Content/images/post/add.png")" width="25" height="25" alt="add" /></a></td>
+                    </tr>
+                    
+                           @foreach (var pair in Model.Details)
+                           {
+                    <tr>
+                        <td> @pair.Key:</td>
+
+                        <td> @pair.Value<br></td>
+                      
+                    </tr>
+                       
+                        }
+                   
+                        <tr>
+                            <td>UrlSeo :</td>
+                            <td colspan="2">@Html.TextBoxFor(m => m.UrlSeo, new { @class = "editPostSeo" })</td>
+                        </tr>
+                        <tr>
+                            <td>Описание :</td>
+                            <td colspan="2" class="editPostDesc">
+                                @Html.TextAreaFor(m => m.Description, new { @id = "editor1", Value = Model.Description })
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td colspan="3" class="editPostBody"><input class="comTextBtn" type="submit" value="&#x27a5;" /></td>
+                        </tr>
+
+                    </table>
+            </div>
+        }
+
+
+
+@*@using (Html.BeginForm("AddPropertyValueToProduct", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        List<string> catsId = new List<string>();
+        foreach (var c in Model.ProductCategories)
+        {
+            catsId.Add(c.Id);
+        }
+        string catId;
+        if (catsId.Count.Equals(0))
+        {
+            catId = "1";
+        }
+        else
+        { catId = catsId.First(); }
+        <table>
+            <tr>
+                <td>
+                    <input type="hidden" name="slug" value="@Model.UrlSeo" />
+                    <input type="hidden" name="productid" value="@Model.ID" />
+                    <input type="hidden" name="categoryid" value="@catId" />
+                </td>
+            </tr>
+
+            @foreach (var value in Model.ProductPropertyValues)
+            {
+         
+
+                <tr>
+
+                    <td>
+                        <input type="text" id="valuefield" name="value" placeholder="@value.PropertyValue">
+                        <a href="@Url.Action("RemovePropertyValueFromProduct", "Product", new { productid = Model.ID, slug=Model.UrlSeo, propValue = value.PropertyValue })" class="addremoveBtn" title="Add Video"><img src="@Url.Content("~/Content/images/post/remove.png")" width="25" height="25" alt="add" /></a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td><input class="addVidBtn" type="submit" value="&#x27a5;" /></td>
+
+            </tr>
+        </table>
+    }*@
+   
+
